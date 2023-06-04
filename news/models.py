@@ -1,4 +1,5 @@
 from django.db import models
+from djrichtextfield.models import RichTextField
 
 class Author(models.Model):
     full_name = models.CharField(max_length=70)
@@ -9,7 +10,7 @@ class Author(models.Model):
 class News(models.Model):
     headline = models.CharField(max_length=200)
     picture = models.ImageField(upload_to='news-images/')
-    content = models.TextField()
+    content = RichTextField()
 
     # Publication Date & Last Updateed date
     pub_date = models.DateField(auto_now_add=True) 

@@ -25,6 +25,7 @@ urlpatterns = [
     path('api/news/', include('news.urls')),
     path('api/question/', include('question.urls')),
     
-    path('api-auth/', include('rest_framework.urls', namespace='rest_framework'))
+    path('api-auth/', include('rest_framework.urls', namespace='rest_framework')),
+    path('djrichtextfield/', include('djrichtextfield.urls')),
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 

@@ -27,10 +27,12 @@ DEBUG = True
 
 ALLOWED_HOSTS = ['*']
 
-CORS_ALLOW_ALL_ORIGINS = True
-# CORS_ALLOWED_ORIGINS = [
-#     'http://localhost:3000',
-# ]   
+# CORS_ALLOW_ALL_ORIGINS = True
+CORS_ALLOWED_ORIGINS = [
+    'http://localhost:3000',
+]  
+CORS_ALLOW_CREDENTIALS = True
+ 
 
 # Application definition
 
@@ -44,6 +46,7 @@ INSTALLED_APPS = [
 
     'rest_framework',
     'corsheaders',
+    'djrichtextfield',
 
     'api',
     'news',
@@ -139,3 +142,14 @@ MEDIA_ROOT = BASE_DIR / MEDIA_URL
 # https://docs.djangoproject.com/en/4.1/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+DJRICHTEXTFIELD_CONFIG = {
+    'js': ['//cdn.tiny.cloud/1/no-api-key/tinymce/5/tinymce.min.js'],
+    'init_template': 'djrichtextfield/init/tinymce.js',
+    'settings': {
+        'menubar': False,
+        'plugins': 'link image',
+        'toolbar': 'bold italic | link image | removeformat',
+        'width': 700
+    }
+}
