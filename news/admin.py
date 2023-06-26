@@ -7,9 +7,9 @@ class AuthorAdmin(admin.ModelAdmin):
     list_display = ['full_name']
 
 class NewsAdmin(admin.ModelAdmin):
-    readonly_fields = ('id', 'pub_date', 'upd_date',)
-    list_display = ['pub_date', 'upd_date', 'headline']
-    ordering = ['-pub_date']
+    readonly_fields = ('id', 'created_at', 'updated_at',)
+    list_display = ['created_at', 'updated_at', 'headline']
+    ordering = ['-created_at']
 
 
 admin.site.register(Author, AuthorAdmin)
