@@ -13,8 +13,8 @@ class News(models.Model):
     content = RichTextField()
 
     # Publication Date & Last Updateed date
-    pub_date = models.DateField(auto_now_add=True) 
-    upd_date = models.DateField(auto_now_add=True)
+    created_at = models.DateTimeField(auto_now_add=True) 
+    updated_at = models.DateTimeField(auto_now=True)
 
     authors = models.ManyToManyField(Author)
     
