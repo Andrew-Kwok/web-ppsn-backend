@@ -28,6 +28,7 @@ urlpatterns = [
     path('api/', include('api.urls')),
     path('api/news/', include('news.urls')),
     path('api/question/', include('question.urls')),
+    path('api/hiring/', include('hiring.urls')),
     
     path('api-auth/', include('rest_framework.urls', namespace='rest_framework')),
     path('djrichtextfield/', include('djrichtextfield.urls')),

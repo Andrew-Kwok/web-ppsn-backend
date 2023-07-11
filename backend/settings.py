@@ -33,7 +33,8 @@ CORS_ALLOWED_ORIGINS = [
     'https://web-ppsn-frontend.vercel.app',
     'https://web-ppsn-frontend-andrew-kwok.vercel.app',
     'https://web-ppsn-frontend-git-master-andrew-kwok.vercel.app',
-    'https://ppsnindonesia.com'
+    'https://ppsnindonesia.com',
+    'https://www.ppsnindonesia.com'
 ]  
 CORS_ALLOW_CREDENTIALS = True
  
@@ -55,6 +56,7 @@ INSTALLED_APPS = [
     'api',
     'news',
     'question',
+    'hiring',
 ]
 
 MIDDLEWARE = [
