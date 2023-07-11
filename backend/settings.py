@@ -37,7 +37,6 @@ CORS_ALLOWED_ORIGINS = [
     'https://www.ppsnindonesia.com'
 ]  
 CORS_ALLOW_CREDENTIALS = True
- 
 
 # Application definition
 
