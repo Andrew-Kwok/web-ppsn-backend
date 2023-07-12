@@ -153,5 +153,8 @@ class RegistrationFormUploadView(views.APIView):
             docx_file = request.FILES['registration_form']
             convert_docx_to_model(docx_file)
 
-            return Response(serializer.data, status=status.HTTP_201_CREATED)
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+            response = {'message': 'file successfully saved'}
+            return Response(response, status=status.HTTP_200_OK)
+
+        response = {'message': serializer.errors}
+        return Response(response, status=status.HTTP_400_BAD_REQUEST)
