@@ -4,6 +4,7 @@ import uuid
 
 # Create your models here.
 # TODO: consider using models.TextChoices
+# TODO: `masa_kerja_mulai` and `masa_kerja-akhir` are using CharField, consider changing after .docx form is fixed
 class RegistrationFormFile(models.Model):
     registration_form = models.FileField(upload_to='documents/')
 
@@ -64,9 +65,8 @@ class RegistrationDataOrganization(models.Model):
     deskripsi_jabatan = models.TextField()
 
     registration_data = models.ForeignKey(RegistrationData, on_delete=models.CASCADE, related_name='organisasi')
-
-    def registration_data__nama_lengkap(self, obj):
-        return obj.registration_data.nama_lengkap
+    def registration_data__nama_lengkap(self):
+        return self.registration_data.nama_lengkap
 
 
 class RegistrationDataAchievement(models.Model):
@@ -78,15 +78,20 @@ class RegistrationDataAchievement(models.Model):
     keterangan_tambahan = models.TextField()
 
     registration_data = models.ForeignKey(RegistrationData, on_delete=models.CASCADE, related_name='prestasi_penghargaan')
+    def registration_data__nama_lengkap(self):
+        return self.registration_data.nama_lengkap
+
 
 class RegistrationDataExperience(models.Model):
     nama_kegiatan = models.CharField(max_length=200)
     lembaga_penyelenggara = models.CharField(max_length=200)
-    masa_kerja_mulai = models.DateField(null=True)
-    masa_kerja_akhir = models.DateField(null=True)
+    masa_kerja_mulai = models.CharField(max_length=20)
+    masa_kerja_akhir = models.CharField(max_length=20)
     keterangan_tambahan = models.TextField()
 
     registration_data = models.ForeignKey(RegistrationData, on_delete=models.CASCADE, related_name='pengalaman_kerja')
+    def registration_data__nama_lengkap(self):
+        return self.registration_data.nama_lengkap
 
 
 class RegistrationDataScholarship(models.Model):
@@ -98,6 +103,8 @@ class RegistrationDataScholarship(models.Model):
     tipe_pendanaan = models.CharField(max_length=20)
 
     registration_data = models.ForeignKey(RegistrationData, on_delete=models.CASCADE, related_name='beasiswa')
+    def registration_data__nama_lengkap(self):
+        return self.registration_data.nama_lengkap
 
 
 class RegistrationDataPublication(models.Model):
@@ -109,6 +116,8 @@ class RegistrationDataPublication(models.Model):
     deskripsi_tambahan = models.TextField()
 
     registration_data = models.ForeignKey(RegistrationData, on_delete=models.CASCADE, related_name='publikasi')
+    def registration_data__nama_lengkap(self):
+        return self.registration_data.nama_lengkap
 
 class RegistrationDataLanguage(models.Model):
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
@@ -120,6 +129,8 @@ class RegistrationDataLanguage(models.Model):
     tahun_tes = models.IntegerField(null=True)
 
     registration_data = models.ForeignKey(RegistrationData, on_delete=models.CASCADE, related_name='bahasa_asing')
+    def registration_data__nama_lengkap(self):
+        return self.registration_data.nama_lengkap
 
 
 class RegistrationDataSkill(models.Model):
@@ -130,6 +141,8 @@ class RegistrationDataSkill(models.Model):
     sastra = models.TextField()
 
     registration_data = models.OneToOneField(RegistrationData, on_delete=models.CASCADE, related_name='skill')
+    def registration_data__nama_lengkap(self):
+        return self.registration_data.nama_lengkap
 
 
 class RegistrationDataDivisionChoice(models.Model):
@@ -141,3 +154,5 @@ class RegistrationDataDivisionChoice(models.Model):
     harapan_kontribusi = models.TextField()
 
     registration_data = models.ForeignKey(RegistrationData, on_delete=models.CASCADE, related_name='pilihan_formasi')
+    def registration_data__nama_lengkap(self):
+        return self.registration_data.nama_lengkap

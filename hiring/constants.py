@@ -4,8 +4,8 @@ REGISTRATION_FORM_DATE_FIELD = {
     'tanggal_lahir': "%A, %d %B %Y", 
     'masa_jabatan_mulai': "%B %Y", 
     'masa_jabatan_akhir': "%B %Y", 
-    'masa_kerja_mulai': "%m-%y",
-    'masa_kerja_akhir': "%m-%y",
+    # 'masa_kerja_mulai': "%m-%y",
+    # 'masa_kerja_akhir': "%m-%y",
 }
 
 REGISTRATION_FORM_BOOLEAN_FIELD = {
@@ -104,6 +104,7 @@ REGISTRATION_FORM_SCHOLARSHIP_MAPPING = {
         for code, field in REGISTRATION_FORM_SCHOLARSHIP_FIELD.items()
         for i in range(1, 6)
 }
+REGISTRATION_FORM_SCHOLARSHIP_MAPPING.update({'d34d5': ('lembaga_penyelenggara', 5)})
 
 REGISTRATION_FORM_PUBLICATION_FIELD = {
     '38': 'judul_publikasi',

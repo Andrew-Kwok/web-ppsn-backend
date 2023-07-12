@@ -51,7 +51,7 @@ def convert_docx_to_model(docx_file) -> None:
     # storing the data
     error_notes = []
     reg_data = models.RegistrationData.objects.create()
-    reg_data_skill = models.RegistrationDataDivisionChoice.objects.create(registration_data=reg_data)
+    reg_data_skill = models.RegistrationDataSkill.objects.create(registration_data=reg_data)
     reg_data_organization: Dict[str, models.RegistrationDataOrganization] = dict()
     reg_data_achievement: Dict[str, models.RegistrationDataAchievement] = dict()
     reg_data_scholarship: Dict[str, models.RegistrationDataScholarship] = dict()
@@ -62,7 +62,7 @@ def convert_docx_to_model(docx_file) -> None:
 
     for (key, value) in registrant_data:
         if key in REGISTRATION_FORM_BOOLEAN_FIELD:
-            value = value == REGISTRATION_FORM_BOOLEAN_FIELD[key]
+            value = value.upper() == REGISTRATION_FORM_BOOLEAN_FIELD[key]
 
         try:
             if key in REGISTRATION_FORM_DATA_MAPPING:
@@ -122,7 +122,6 @@ def convert_docx_to_model(docx_file) -> None:
             error_notes.append(str(e))
 
     reg_data.error_notes = ';'.join(error_notes)
-
 
     # saving to database
     reg_data.save()
