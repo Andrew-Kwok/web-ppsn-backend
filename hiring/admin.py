@@ -3,7 +3,7 @@ from django.contrib import admin
 from . import models
 
 class RegistrationDataAdmin(admin.ModelAdmin):
-    readonly_fields = ('id', )
+    readonly_fields = ('id', 'created_at', 'updated_at')
     list_display = ['id', 'nama_lengkap']
 
 
