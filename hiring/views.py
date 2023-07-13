@@ -52,6 +52,7 @@ def convert_docx_to_model(docx_file) -> None:
     error_notes = []
     reg_data = models.RegistrationData.objects.create()
     reg_data_skill = models.RegistrationDataSkill.objects.create(registration_data=reg_data)
+    reg_data_committee = models.RegistrationDataCommitteeDecision.objects.create(registration_data=reg_data)
     reg_data_organization: Dict[str, models.RegistrationDataOrganization] = dict()
     reg_data_achievement: Dict[str, models.RegistrationDataAchievement] = dict()
     reg_data_scholarship: Dict[str, models.RegistrationDataScholarship] = dict()
@@ -126,6 +127,7 @@ def convert_docx_to_model(docx_file) -> None:
     # saving to database
     reg_data.save()
     reg_data_skill.save()
+    reg_data_committee.save()
 
     for _model in reg_data_organization.values():
         _model.save()

@@ -67,6 +67,8 @@ class RegistrationDataOrganization(models.Model):
     registration_data = models.ForeignKey(RegistrationData, on_delete=models.CASCADE, related_name='organisasi')
     def registration_data__nama_lengkap(self):
         return self.registration_data.nama_lengkap
+    def registration_data__tanggal_lahir(self):
+        return self.registration_data.tanggal_lahir
 
 
 class RegistrationDataAchievement(models.Model):
@@ -80,6 +82,8 @@ class RegistrationDataAchievement(models.Model):
     registration_data = models.ForeignKey(RegistrationData, on_delete=models.CASCADE, related_name='prestasi_penghargaan')
     def registration_data__nama_lengkap(self):
         return self.registration_data.nama_lengkap
+    def registration_data__tanggal_lahir(self):
+        return self.registration_data.tanggal_lahir
 
 
 class RegistrationDataExperience(models.Model):
@@ -92,6 +96,8 @@ class RegistrationDataExperience(models.Model):
     registration_data = models.ForeignKey(RegistrationData, on_delete=models.CASCADE, related_name='pengalaman_kerja')
     def registration_data__nama_lengkap(self):
         return self.registration_data.nama_lengkap
+    def registration_data__tanggal_lahir(self):
+        return self.registration_data.tanggal_lahir
 
 
 class RegistrationDataScholarship(models.Model):
@@ -105,6 +111,8 @@ class RegistrationDataScholarship(models.Model):
     registration_data = models.ForeignKey(RegistrationData, on_delete=models.CASCADE, related_name='beasiswa')
     def registration_data__nama_lengkap(self):
         return self.registration_data.nama_lengkap
+    def registration_data__tanggal_lahir(self):
+        return self.registration_data.tanggal_lahir
 
 
 class RegistrationDataPublication(models.Model):
@@ -118,6 +126,8 @@ class RegistrationDataPublication(models.Model):
     registration_data = models.ForeignKey(RegistrationData, on_delete=models.CASCADE, related_name='publikasi')
     def registration_data__nama_lengkap(self):
         return self.registration_data.nama_lengkap
+    def registration_data__tanggal_lahir(self):
+        return self.registration_data.tanggal_lahir
 
 class RegistrationDataLanguage(models.Model):
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
@@ -131,6 +141,8 @@ class RegistrationDataLanguage(models.Model):
     registration_data = models.ForeignKey(RegistrationData, on_delete=models.CASCADE, related_name='bahasa_asing')
     def registration_data__nama_lengkap(self):
         return self.registration_data.nama_lengkap
+    def registration_data__tanggal_lahir(self):
+        return self.registration_data.tanggal_lahir
 
 
 class RegistrationDataSkill(models.Model):
@@ -143,6 +155,8 @@ class RegistrationDataSkill(models.Model):
     registration_data = models.OneToOneField(RegistrationData, on_delete=models.CASCADE, related_name='skill')
     def registration_data__nama_lengkap(self):
         return self.registration_data.nama_lengkap
+    def registration_data__tanggal_lahir(self):
+        return self.registration_data.tanggal_lahir
 
 
 class RegistrationDataDivisionChoice(models.Model):
@@ -156,3 +170,20 @@ class RegistrationDataDivisionChoice(models.Model):
     registration_data = models.ForeignKey(RegistrationData, on_delete=models.CASCADE, related_name='pilihan_formasi')
     def registration_data__nama_lengkap(self):
         return self.registration_data.nama_lengkap
+    def registration_data__tanggal_lahir(self):
+        return self.registration_data.tanggal_lahir
+
+
+class RegistrationDataCommitteeDecision(models.Model):
+    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
+    nama_panitia = models.CharField(max_length=200, null=True)
+    tanggal_tinjau = models.DateField(null=True)
+    berkas_lengkap = models.BooleanField(null=True)
+    hasil_tinjauan = models.TextField(null=True)
+    status_lulus = models.BooleanField(null=True)
+
+    registration_data = models.ForeignKey(RegistrationData, on_delete=models.CASCADE, related_name='hasil_seleksi')
+    def registration_data__nama_lengkap(self):
+        return self.registration_data.nama_lengkap
+    def registration_data__tanggal_lahir(self):
+        return self.registration_data.tanggal_lahir
