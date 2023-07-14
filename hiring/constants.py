@@ -2,8 +2,8 @@ REGISTRATION_FORM_EMPTY_VALUE = [None, '', 'Pilih', 'Ketik di sini', 'Ketik di s
 
 REGISTRATION_FORM_DATE_FIELD = {
     'tanggal_lahir': "%A, %d %B %Y", 
-    'masa_jabatan_mulai': "%B %Y", 
-    'masa_jabatan_akhir': "%B %Y", 
+    'masa_jabatan_mulai': "%B %y", 
+    'masa_jabatan_akhir': "%B %y", 
     # 'masa_kerja_mulai': "%m-%y",
     # 'masa_kerja_akhir': "%m-%y",
 }
