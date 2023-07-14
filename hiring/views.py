@@ -19,7 +19,20 @@ from google.oauth2.credentials import Credentials
 
 import docx
 
-from .constants import *
+from .constants import (
+    REGISTRATION_FORM_EMPTY_VALUE,
+    REGISTRATION_FORM_DATE_FIELD,
+    REGISTRATION_FORM_BOOLEAN_FIELD,
+    REGISTRATION_FORM_DATA_MAPPING,
+    REGISTRATION_FORM_ORGANIZATION_MAPPING,
+    REGISTRATION_FORM_ACHIEVEMENT_MAPPING,
+    REGISTRATION_FORM_EXPERIENCE_MAPPING,
+    REGISTRATION_FORM_SCHOLARSHIP_MAPPING,
+    REGISTRATION_FORM_PUBLICATION_MAPPING,
+    REGISTRATION_FORM_LANGUAGE_MAPPING,
+    REGISTRATION_FORM_SKILL_MAPPING,
+    REGISTRATION_FORM_CHOICE_MAPPING,
+)
 from . import models
 from .serializers import RegistrationFormFileSerializer
 
@@ -75,6 +88,7 @@ def saveDocxToDatabase(docx_file, gdrive_link) -> None:
     reg_data_division_choice: Dict[str, models.RegistrationDataDivisionChoice] = dict()
 
     for (key, value) in registrant_data:
+        value = value.strip()
         if key in REGISTRATION_FORM_BOOLEAN_FIELD:
             value = value.upper() == REGISTRATION_FORM_BOOLEAN_FIELD[key]
 

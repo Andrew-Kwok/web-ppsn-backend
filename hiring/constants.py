@@ -155,10 +155,10 @@ REGISTRATION_FORM_CHOICE_MAPPING = {
     "pos1_minat": ('tingkat_jabatan', 2),
     'pil1_minat_minat': ('minat_bakat', 2),
     'pil1_minat_harapan': ('harapan_kontribusi', 2),
-    'pil1_minat_harapan': ('pengalaman', 2),
+    'pil1_minat_pengalaman': ('pengalaman', 2),
     "pil2_minat": ('nama_formasi', 3),
     "pos2_minat": ('tingkat_jabatan', 3),
     'pil2_minat_minat': ('minat_bakat', 3),
     'pil2_minat_harapan': ('harapan_kontribusi', 3),
-    'pil2_minat_harapan': ('pengalaman', 3),
+    'pil2_minat_pengalaman': ('pengalaman', 3),
 }
