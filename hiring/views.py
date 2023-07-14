@@ -1,15 +1,28 @@
-from rest_framework.response import Response
-from rest_framework import views, status
+import io
+import os
+import tempfile
+import datetime
+import xml.etree.ElementTree as ET
+
 from typing import Dict
 
-from .serializer import RegistrationFormFileSerializer
+from rest_framework import status
+from rest_framework.response import Response
+from rest_framework.views import APIView
+
+from googleapiclient.discovery import build
+from googleapiclient.errors import HttpError
+from googleapiclient.http import MediaFileUpload
+from google.auth.transport.requests import Request
+from google_auth_oauthlib.flow import InstalledAppFlow
+from google.oauth2.credentials import Credentials
+
+import docx
+
 from .constants import *
 from . import models
+from .serializers import RegistrationFormFileSerializer
 
-import io
-import datetime
-import docx
-import xml.etree.ElementTree as ET
 
 
 def convertDate(date_string, format):
@@ -18,7 +31,7 @@ def convertDate(date_string, format):
     return formatted_date
 
 
-def convert_docx_to_model(docx_file) -> None:
+def saveDocxToDatabase(docx_file, gdrive_link) -> None:
     # convert .docx to .xml 
     doc = docx.Document(docx_file)
     xml_content = doc.part._element.xml
@@ -50,7 +63,7 @@ def convert_docx_to_model(docx_file) -> None:
 
     # storing the data
     error_notes = []
-    reg_data = models.RegistrationData.objects.create()
+    reg_data = models.RegistrationData.objects.create(tautan_dokumen_drive_ppsn=gdrive_link)
     reg_data_skill = models.RegistrationDataSkill.objects.create(registration_data=reg_data)
     reg_data_committee = models.RegistrationDataCommitteeDecision.objects.create(registration_data=reg_data)
     reg_data_organization: Dict[str, models.RegistrationDataOrganization] = dict()
@@ -145,15 +158,72 @@ def convert_docx_to_model(docx_file) -> None:
         _model.save()
 
 
+class UploadFormToDriveException(Exception):
+    pass
+
+
+def uploadFormToDrive(docx_file):
+    CREDENTIALS_FILE = os.path.join(os.path.dirname(__file__), 'gcloud_key', 'credentials.json')
+    TOKEN_FILE = os.path.join(os.path.dirname(__file__), 'gcloud_key', 'token.json')
+    GDRIVE_FOLDER = os.getenv('GDRIVE_PARENT_FOLDER_ID')
+    SCOPES = ['https://www.googleapis.com/auth/drive']
+
+    if not os.path.exists(CREDENTIALS_FILE):
+        raise UploadFormToDriveException("error uploading to drive: credentials not found")
+
+    creds = None
+    if os.path.exists(TOKEN_FILE):
+        creds = Credentials.from_authorized_user_file(TOKEN_FILE, SCOPES)
+    if not creds or not creds.valid:
+        if creds and creds.expired and creds.refresh_token:
+            creds.refresh(Request())
+        else:
+            flow = InstalledAppFlow.from_client_secrets_file(CREDENTIALS_FILE, SCOPES)
+            creds = flow.run_local_server(port=0)
+        with open(TOKEN_FILE, 'w') as token:
+            token.write(creds.to_json())
+
+    try:
+        with tempfile.NamedTemporaryFile(delete=False) as temp_file:
+            temp_file.write(docx_file.read())
+            temp_file_path = temp_file.name
+
+        service = build('drive', 'v3', credentials=creds)
+
+
+        # Upload the file to Google Drive
+        media = MediaFileUpload(temp_file_path, mimetype='application/vnd.openxmlformats-officedocument.wordprocessingml.document')
+        request = service.files().create(
+            media_body=media,
+            body={'name': docx_file.name, 'parents': [GDRIVE_FOLDER]}
+        )
+        response = request.execute()
+
+    except HttpError as error:
+        
+        raise UploadFormToDriveException(f'An error occurred: {error}')
+
+    file_id = response['id']
+    link = f"https://drive.google.com/file/d/{file_id}"
+
+    return link
+
+
 # Create your views here.
-class RegistrationFormUploadView(views.APIView):
+class RegistrationFormUploadView(APIView):
     def post(self, request, format=None):
         serializer = RegistrationFormFileSerializer(data=request.data)
         if serializer.is_valid():
-            serializer.save()
+            # serializer.save()
     
             docx_file = request.FILES['registration_form']
-            convert_docx_to_model(docx_file)
+
+            try:
+                link = uploadFormToDrive(docx_file)
+            except UploadFormToDriveException:
+                return Response({'message': 'file upload to drive failed'}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+            
+            saveDocxToDatabase(docx_file, link)
 
             response = {'message': 'file successfully saved'}
             return Response(response, status=status.HTTP_200_OK)

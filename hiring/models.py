@@ -8,48 +8,50 @@ import uuid
 class RegistrationFormFile(models.Model):
     registration_form = models.FileField(upload_to='documents/')
 
+
 class RegistrationData(models.Model):
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     foto = models.ImageField(upload_to='foto-peserta/')
-    nama_lengkap = models.CharField(max_length=200)
-    jenis_kelamin = models.CharField(max_length=20)
-    tempat_lahir = models.CharField(max_length=50)
+    nama_lengkap = models.CharField(max_length=200, default='')
+    jenis_kelamin = models.CharField(max_length=20, default='')
+    tempat_lahir = models.CharField(max_length=50, default='')
     tanggal_lahir = models.DateField(null=True)
-    kota_pribadi = models.CharField(max_length=50)
-    prov_pribadi = models.CharField(max_length=50)
+    kota_pribadi = models.CharField(max_length=50, default='')
+    prov_pribadi = models.CharField(max_length=50, default='')
 
-    email = models.EmailField()
-    notelp = models.CharField(max_length=20)
-    whatsapp = models.CharField(max_length=20)
-    linkedin = models.CharField(max_length=100)
-    instagram = models.CharField(max_length=100)
-    telegram = models.CharField(max_length=20)
-    line = models.CharField(max_length=50)
+    email = models.EmailField(default='')
+    notelp = models.CharField(max_length=20, default='')
+    whatsapp = models.CharField(max_length=20, default='')
+    linkedin = models.CharField(max_length=100, default='')
+    instagram = models.CharField(max_length=100, default='')
+    telegram = models.CharField(max_length=20, default='')
+    line = models.CharField(max_length=50, default='')
 
-    nama_sekolah = models.CharField(max_length=200)
-    sistem_sekolah = models.CharField(max_length=50)
+    nama_sekolah = models.CharField(max_length=200, default='')
+    sistem_sekolah = models.CharField(max_length=50, default='')
     tahun_masuk_sma = models.IntegerField(null=True)
-    semester_sma = models.CharField(max_length=5)
-    ekstrakurikuler = models.CharField(max_length=200)
-    kota_sekolah = models.CharField(max_length=50)
-    prov_sekolah = models.CharField(max_length=50)
+    semester_sma = models.CharField(max_length=5, default='')
+    ekstrakurikuler = models.CharField(max_length=200, default='')
+    kota_sekolah = models.CharField(max_length=50, default='')
+    prov_sekolah = models.CharField(max_length=50, default='')
 
-    nama_institusi = models.CharField(max_length=200)
-    fakultas = models.CharField(max_length=200)
-    penjurusan = models.CharField(max_length=200)
-    prodi = models.CharField(max_length=200)
+    nama_institusi = models.CharField(max_length=200, default='')
+    fakultas = models.CharField(max_length=200, default='')
+    penjurusan = models.CharField(max_length=200, default='')
+    prodi = models.CharField(max_length=200, default='')
     tahun_masuk_dikti = models.IntegerField(null=True)
-    ukm = models.CharField(max_length=200)
-    kota_institusi = models.CharField(max_length=50)
-    prov_institusi = models.CharField(max_length=50)
+    ukm = models.CharField(max_length=200, default='')
+    kota_institusi = models.CharField(max_length=50, default='')
+    prov_institusi = models.CharField(max_length=50, default='')
 
-    motivasi_bergabung = models.TextField()
-    tujuan_bergabung = models.TextField()
+    motivasi_bergabung = models.TextField(default='')
+    tujuan_bergabung = models.TextField(default='')
 
     pakta_setuju = models.BooleanField(default=False)
     pakta_tidak_setuju = models.BooleanField(default=False)
 
-    tautan_dokumen = models.CharField(max_length=200)
+    tautan_dokumen = models.CharField(max_length=200, default='')
+    tautan_dokumen_drive_ppsn = models.CharField(max_length=200, default='')
 
     error_notes = models.TextField(default='')
     created_at = models.DateTimeField(auto_now_add=True) 
@@ -58,11 +60,11 @@ class RegistrationData(models.Model):
 
 class RegistrationDataOrganization(models.Model):
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
-    nama_institusi = models.CharField(max_length=200)
-    posisi_jabatan = models.CharField(max_length=25)
+    nama_institusi = models.CharField(max_length=200, default='')
+    posisi_jabatan = models.CharField(max_length=25, default='')
     masa_jabatan_mulai = models.DateField(null=True)
     masa_jabatan_akhir = models.DateField(null=True)
-    deskripsi_jabatan = models.TextField()
+    deskripsi_jabatan = models.TextField(default='')
 
     registration_data = models.ForeignKey(RegistrationData, on_delete=models.CASCADE, related_name='organisasi')
     def registration_data__nama_lengkap(self):
@@ -73,11 +75,11 @@ class RegistrationDataOrganization(models.Model):
 
 class RegistrationDataAchievement(models.Model):
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
-    nama_acara = models.CharField(max_length=200)
-    lembaga_penyelenggara = models.CharField(max_length=200)
-    tingkat = models.CharField(max_length=20)
+    nama_acara = models.CharField(max_length=200, default='')
+    lembaga_penyelenggara = models.CharField(max_length=200, default='')
+    tingkat = models.CharField(max_length=20, default='')
     tahun_perolehan = models.IntegerField(null=True)
-    keterangan_tambahan = models.TextField()
+    keterangan_tambahan = models.TextField(default='')
 
     registration_data = models.ForeignKey(RegistrationData, on_delete=models.CASCADE, related_name='prestasi_penghargaan')
     def registration_data__nama_lengkap(self):
@@ -87,11 +89,11 @@ class RegistrationDataAchievement(models.Model):
 
 
 class RegistrationDataExperience(models.Model):
-    nama_kegiatan = models.CharField(max_length=200)
-    lembaga_penyelenggara = models.CharField(max_length=200)
-    masa_kerja_mulai = models.CharField(max_length=20)
-    masa_kerja_akhir = models.CharField(max_length=20)
-    keterangan_tambahan = models.TextField()
+    nama_kegiatan = models.CharField(max_length=200, default='')
+    lembaga_penyelenggara = models.CharField(max_length=200, default='')
+    masa_kerja_mulai = models.CharField(max_length=20, default='')
+    masa_kerja_akhir = models.CharField(max_length=20, default='')
+    keterangan_tambahan = models.TextField(default='')
 
     registration_data = models.ForeignKey(RegistrationData, on_delete=models.CASCADE, related_name='pengalaman_kerja')
     def registration_data__nama_lengkap(self):
@@ -102,11 +104,11 @@ class RegistrationDataExperience(models.Model):
 
 class RegistrationDataScholarship(models.Model):
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
-    nama_beasiswa = models.CharField(max_length=200)
-    lembaga_penyelenggara = models.CharField(max_length=200)
-    jenjang = models.CharField(max_length=20)
+    nama_beasiswa = models.CharField(max_length=200, default='')
+    lembaga_penyelenggara = models.CharField(max_length=200, default='')
+    jenjang = models.CharField(max_length=20, default='')
     tahun_beasiswa = models.IntegerField(null=True)
-    tipe_pendanaan = models.CharField(max_length=20)
+    tipe_pendanaan = models.CharField(max_length=20, default='')
 
     registration_data = models.ForeignKey(RegistrationData, on_delete=models.CASCADE, related_name='beasiswa')
     def registration_data__nama_lengkap(self):
@@ -117,11 +119,11 @@ class RegistrationDataScholarship(models.Model):
 
 class RegistrationDataPublication(models.Model):
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
-    judul_publikasi = models.CharField(max_length=200)
-    jenis_publikasi = models.CharField(max_length=100)
-    lembaga_publikasi = models.CharField(max_length=200)
+    judul_publikasi = models.CharField(max_length=200, default='')
+    jenis_publikasi = models.CharField(max_length=100, default='')
+    lembaga_publikasi = models.CharField(max_length=200, default='')
     tahun_publikasi = models.IntegerField(null=True)
-    deskripsi_tambahan = models.TextField()
+    deskripsi_tambahan = models.TextField(default='')
 
     registration_data = models.ForeignKey(RegistrationData, on_delete=models.CASCADE, related_name='publikasi')
     def registration_data__nama_lengkap(self):
@@ -131,11 +133,11 @@ class RegistrationDataPublication(models.Model):
 
 class RegistrationDataLanguage(models.Model):
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
-    bahasa = models.CharField(max_length=100)
-    keterampilan_bicara = models.CharField(max_length=100)
-    keterampilan_menulis = models.CharField(max_length=100)
-    keterampilan_membaca = models.CharField(max_length=100)
-    skor_kemahiran = models.CharField(max_length=200)
+    bahasa = models.CharField(max_length=100, default='')
+    keterampilan_bicara = models.CharField(max_length=100, default='')
+    keterampilan_menulis = models.CharField(max_length=100, default='')
+    keterampilan_membaca = models.CharField(max_length=100, default='')
+    skor_kemahiran = models.CharField(max_length=200, default='')
     tahun_tes = models.IntegerField(null=True)
 
     registration_data = models.ForeignKey(RegistrationData, on_delete=models.CASCADE, related_name='bahasa_asing')
@@ -147,10 +149,10 @@ class RegistrationDataLanguage(models.Model):
 
 class RegistrationDataSkill(models.Model):
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
-    saintek = models.TextField()
-    seni = models.TextField()
-    sosial = models.TextField()
-    sastra = models.TextField()
+    saintek = models.TextField(default='')
+    seni = models.TextField(default='')
+    sosial = models.TextField(default='')
+    sastra = models.TextField(default='')
 
     registration_data = models.OneToOneField(RegistrationData, on_delete=models.CASCADE, related_name='skill')
     def registration_data__nama_lengkap(self):
@@ -161,11 +163,11 @@ class RegistrationDataSkill(models.Model):
 
 class RegistrationDataDivisionChoice(models.Model):
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
-    nama_formasi = models.CharField(max_length=50)
-    tingkat_jabatan = models.CharField(max_length=20)
-    minat_bakat = models.TextField()
-    pengalaman = models.TextField()
-    harapan_kontribusi = models.TextField()
+    nama_formasi = models.CharField(max_length=50, default='')
+    tingkat_jabatan = models.CharField(max_length=20, default='')
+    minat_bakat = models.TextField(default='')
+    pengalaman = models.TextField(default='')
+    harapan_kontribusi = models.TextField(default='')
 
     registration_data = models.ForeignKey(RegistrationData, on_delete=models.CASCADE, related_name='pilihan_formasi')
     def registration_data__nama_lengkap(self):
@@ -187,3 +189,4 @@ class RegistrationDataCommitteeDecision(models.Model):
         return self.registration_data.nama_lengkap
     def registration_data__tanggal_lahir(self):
         return self.registration_data.tanggal_lahir
+

@@ -1,65 +1,124 @@
 from django.contrib import admin
+from .models import (
+    RegistrationData,
+    RegistrationDataOrganization,
+    RegistrationDataAchievement,
+    RegistrationDataExperience,
+    RegistrationDataScholarship,
+    RegistrationDataPublication,
+    RegistrationDataLanguage,
+    RegistrationDataSkill,
+    RegistrationDataDivisionChoice,
+    RegistrationDataCommitteeDecision,
+)
 
-from . import models
+class RegistrationDataOrganizationInline(admin.TabularInline):
+    model = RegistrationDataOrganization
+    extra = 0
 
+class RegistrationDataAchievementInline(admin.TabularInline):
+    model = RegistrationDataAchievement
+    extra = 0
+
+class RegistrationDataExperienceInline(admin.TabularInline):
+    model = RegistrationDataExperience
+    extra = 0
+
+class RegistrationDataScholarshipInline(admin.TabularInline):
+    model = RegistrationDataScholarship
+    extra = 0
+
+class RegistrationDataPublicationInline(admin.TabularInline):
+    model = RegistrationDataPublication
+    extra = 0
+
+class RegistrationDataLanguageInline(admin.TabularInline):
+    model = RegistrationDataLanguage
+    extra = 0
+
+class RegistrationDataSkillInline(admin.TabularInline):
+    model = RegistrationDataSkill
+    extra = 0
+
+class RegistrationDataDivisionChoiceInline(admin.TabularInline):
+    model = RegistrationDataDivisionChoice
+    extra = 0
+
+class RegistrationDataCommitteeDecisionInline(admin.TabularInline):
+    model = RegistrationDataCommitteeDecision
+    extra = 0
+
+@admin.register(RegistrationData)
 class RegistrationDataAdmin(admin.ModelAdmin):
     readonly_fields = ('id', 'created_at', 'updated_at')
-    list_display = ['id', 'nama_lengkap', 'tanggal_lahir']
+    list_display = ['id', 'nama_lengkap', 'tanggal_lahir', 'created_at']
+    ordering = ['-created_at']
+    inlines = [
+        RegistrationDataOrganizationInline,
+        RegistrationDataAchievementInline,
+        RegistrationDataExperienceInline,
+        RegistrationDataScholarshipInline,
+        RegistrationDataPublicationInline,
+        RegistrationDataLanguageInline,
+        RegistrationDataSkillInline,
+        RegistrationDataDivisionChoiceInline,
+        RegistrationDataCommitteeDecisionInline,
+    ]
 
 
-class RegistrationDataOrganizationAdmin(admin.ModelAdmin):
-    readonly_fields = ('id', 'registration_data')
-    list_display = ['id', 'registration_data__nama_lengkap', 'registration_data__tanggal_lahir']
+# class RegistrationDataOrganizationAdmin(admin.ModelAdmin):
+#     readonly_fields = ('id', 'registration_data')
+#     list_display = ['id', 'registration_data__nama_lengkap', 'registration_data__tanggal_lahir']
 
 
-class RegistrationDataAchievementAdmin(admin.ModelAdmin):
-    readonly_fields = ('id', 'registration_data')
-    list_display = ['id', 'registration_data__nama_lengkap', 'registration_data__tanggal_lahir']
+# class RegistrationDataAchievementAdmin(admin.ModelAdmin):
+#     readonly_fields = ('id', 'registration_data')
+#     list_display = ['id', 'registration_data__nama_lengkap', 'registration_data__tanggal_lahir']
 
 
-class RegistrationDataExperienceAdmin(admin.ModelAdmin):
-    readonly_fields = ('id', 'registration_data')
-    list_display = ['id', 'registration_data__nama_lengkap', 'registration_data__tanggal_lahir']
+# class RegistrationDataExperienceAdmin(admin.ModelAdmin):
+#     readonly_fields = ('id', 'registration_data')
+#     list_display = ['id', 'registration_data__nama_lengkap', 'registration_data__tanggal_lahir']
     
 
-class RegistrationDataPublicationAdmin(admin.ModelAdmin):
-    readonly_fields = ('id', 'registration_data')
-    list_display = ['id', 'registration_data__nama_lengkap', 'registration_data__tanggal_lahir']
+# class RegistrationDataPublicationAdmin(admin.ModelAdmin):
+#     readonly_fields = ('id', 'registration_data')
+#     list_display = ['id', 'registration_data__nama_lengkap', 'registration_data__tanggal_lahir']
 
 
-class RegistrationDataScholarshipAdmin(admin.ModelAdmin):
-    readonly_fields = ('id', 'registration_data')
-    list_display = ['id', 'registration_data__nama_lengkap', 'registration_data__tanggal_lahir']
+# class RegistrationDataScholarshipAdmin(admin.ModelAdmin):
+#     readonly_fields = ('id', 'registration_data')
+#     list_display = ['id', 'registration_data__nama_lengkap', 'registration_data__tanggal_lahir']
 
 
-class RegistrationDataLanguageAdmin(admin.ModelAdmin):
-    readonly_fields = ('id', 'registration_data')
-    list_display = ['id', 'registration_data__nama_lengkap', 'registration_data__tanggal_lahir']
+# class RegistrationDataLanguageAdmin(admin.ModelAdmin):
+#     readonly_fields = ('id', 'registration_data')
+#     list_display = ['id', 'registration_data__nama_lengkap', 'registration_data__tanggal_lahir']
 
 
-class RegistrationDataSkillAdmin(admin.ModelAdmin):
-    readonly_fields = ('id', 'registration_data')
-    list_display = ['id', 'registration_data__nama_lengkap', 'registration_data__tanggal_lahir']
+# class RegistrationDataSkillAdmin(admin.ModelAdmin):
+#     readonly_fields = ('id', 'registration_data')
+#     list_display = ['id', 'registration_data__nama_lengkap', 'registration_data__tanggal_lahir']
 
 
-class RegistrationDataDivisionChoiceAdmin(admin.ModelAdmin):
-    readonly_fields = ('id', 'registration_data')
-    list_display = ['id', 'registration_data__nama_lengkap', 'registration_data__tanggal_lahir']
+# class RegistrationDataDivisionChoiceAdmin(admin.ModelAdmin):
+#     readonly_fields = ('id', 'registration_data')
+#     list_display = ['id', 'registration_data__nama_lengkap', 'registration_data__tanggal_lahir']
 
 
-class RegistrationDataDivisionCommitteeDecisionAdmin(admin.ModelAdmin):
-    readonly_fields = ('id', 'registration_data')
-    list_display = ['id', 'registration_data__nama_lengkap', 'registration_data__tanggal_lahir']
+# class RegistrationDataDivisionCommitteeDecisionAdmin(admin.ModelAdmin):
+#     readonly_fields = ('id', 'registration_data')
+#     list_display = ['id', 'registration_data__nama_lengkap', 'registration_data__tanggal_lahir']
 
 
 # Register your models here.
-admin.site.register(models.RegistrationData, RegistrationDataAdmin)
-admin.site.register(models.RegistrationDataOrganization, RegistrationDataOrganizationAdmin)
-admin.site.register(models.RegistrationDataAchievement, RegistrationDataAchievementAdmin)
-admin.site.register(models.RegistrationDataExperience, RegistrationDataExperienceAdmin)
-admin.site.register(models.RegistrationDataPublication, RegistrationDataPublicationAdmin)
-admin.site.register(models.RegistrationDataScholarship, RegistrationDataScholarshipAdmin)
-admin.site.register(models.RegistrationDataLanguage, RegistrationDataLanguageAdmin)
-admin.site.register(models.RegistrationDataSkill, RegistrationDataSkillAdmin)
-admin.site.register(models.RegistrationDataDivisionChoice, RegistrationDataDivisionChoiceAdmin)
-admin.site.register(models.RegistrationDataCommitteeDecision, RegistrationDataDivisionCommitteeDecisionAdmin)
+# admin.site.register(RegistrationData, RegistrationDataAdmin)
+# admin.site.register(RegistrationDataOrganization, RegistrationDataOrganizationAdmin)
+# admin.site.register(RegistrationDataAchievement, RegistrationDataAchievementAdmin)
+# admin.site.register(RegistrationDataExperience, RegistrationDataExperienceAdmin)
+# admin.site.register(RegistrationDataPublication, RegistrationDataPublicationAdmin)
+# admin.site.register(RegistrationDataScholarship, RegistrationDataScholarshipAdmin)
+# admin.site.register(RegistrationDataLanguage, RegistrationDataLanguageAdmin)
+# admin.site.register(RegistrationDataSkill, RegistrationDataSkillAdmin)
+# admin.site.register(RegistrationDataDivisionChoice, RegistrationDataDivisionChoiceAdmin)
+# admin.site.register(RegistrationDataCommitteeDecision, RegistrationDataDivisionCommitteeDecisionAdmin)
