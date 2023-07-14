@@ -51,7 +51,7 @@ class RegistrationDataCommitteeDecisionInline(admin.TabularInline):
 @admin.register(RegistrationData)
 class RegistrationDataAdmin(admin.ModelAdmin):
     readonly_fields = ('id', 'created_at', 'updated_at')
-    list_display = ['id', 'nama_lengkap', 'tanggal_lahir', 'created_at', 'committee_decision_nama_panitia', 'committee_decision_berkas_lengkap', 'committee_decision_status_lulus']
+    list_display = ['nama_lengkap', 'email', 'tanggal_lahir', 'created_at', 'committee_decision_nama_panitia', 'committee_decision_berkas_lengkap', 'committee_decision_status_lulus']
     ordering = ['-created_at']
     inlines = [
         RegistrationDataOrganizationInline,

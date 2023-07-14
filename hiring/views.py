@@ -9,6 +9,8 @@ from typing import Dict
 from rest_framework import status
 from rest_framework.response import Response
 from rest_framework.views import APIView
+from django.core.validators import validate_email
+from django.core.exceptions import ValidationError
 
 from googleapiclient.discovery import build
 from googleapiclient.errors import HttpError
@@ -44,6 +46,10 @@ def convertDate(date_string, format):
     return formatted_date
 
 
+class SaveDocxToDatabaseError(Exception):
+    pass
+
+
 def saveDocxToDatabase(docx_file, gdrive_link) -> None:
     # convert .docx to .xml 
     doc = docx.Document(docx_file)
@@ -54,7 +60,9 @@ def saveDocxToDatabase(docx_file, gdrive_link) -> None:
     tree = ET.parse(xml_file)
     root = tree.getroot()
     registrant_data = [] 
-    for control in root.iter('{http://schemas.openxmlformats.org/wordprocessingml/2006/main}sdt'):
+    email_value, dob_value = None, None
+
+    for control in root.iter('{http://schemas.openxmlformats.org/wordprocessingml/2006/main}sdt'):        
         # Find the tag of the content control
         tag_node = control.find(
             './{http://schemas.openxmlformats.org/wordprocessingml/2006/main}sdtPr/'
@@ -71,12 +79,30 @@ def saveDocxToDatabase(docx_file, gdrive_link) -> None:
 
             # if plain_text not in REGISTRATION_FORM_EMPTY_VALUE:
             if plain_text not in REGISTRATION_FORM_EMPTY_VALUE:
-                registrant_data.append((tag, plain_text))
-            
+                if tag == 'email':
+                    email_value = plain_text.strip()
+                elif tag == 'tanggal_lahir':
+                    dob_value = plain_text.strip()
+                else:
+                    registrant_data.append((tag.strip(), plain_text.strip()))
+
+    if email_value is None:
+        raise SaveDocxToDatabaseError('email: missing or unreadable')
+    try:
+        validate_email(email_value)
+    except ValidationError:
+        raise SaveDocxToDatabaseError('email: invalid format')
+
+    if dob_value is None:
+        raise SaveDocxToDatabaseError('date of birth: missing or unreadable')
+    try:
+        dob_value = convertDate(dob_value, "%A, %d %B %Y")
+    except ValueError:
+        raise SaveDocxToDatabaseError('date of birth: invalid format')
 
     # storing the data
     error_notes = []
-    reg_data = models.RegistrationData.objects.create(tautan_dokumen_drive_ppsn=gdrive_link)
+    reg_data = models.RegistrationData.objects.create(email=email_value, tanggal_lahir=dob_value, tautan_dokumen_drive_ppsn=gdrive_link)
     reg_data_skill = models.RegistrationDataSkill.objects.create(registration_data=reg_data)
     reg_data_committee = models.RegistrationDataCommitteeDecision.objects.create(registration_data=reg_data)
     reg_data_organization: Dict[str, models.RegistrationDataOrganization] = dict()
@@ -88,7 +114,6 @@ def saveDocxToDatabase(docx_file, gdrive_link) -> None:
     reg_data_division_choice: Dict[str, models.RegistrationDataDivisionChoice] = dict()
 
     for (key, value) in registrant_data:
-        value = value.strip()
         if key in REGISTRATION_FORM_BOOLEAN_FIELD:
             value = value.upper() == REGISTRATION_FORM_BOOLEAN_FIELD[key]
 
@@ -149,7 +174,11 @@ def saveDocxToDatabase(docx_file, gdrive_link) -> None:
         except Exception as e:
             error_notes.append(str(e))
 
-    reg_data.error_notes = ';'.join(error_notes)
+    reg_data.error_notes = ';\n'.join(error_notes)
+
+    # remove old data
+    old_data = models.RegistrationData.objects.filter(email=email_value, tanggal_lahir=dob_value)
+    old_data.delete()
 
     # saving to database
     reg_data.save()
@@ -179,7 +208,7 @@ class UploadFormToDriveException(Exception):
 def uploadFormToDrive(docx_file):
     CREDENTIALS_FILE = os.path.join(os.path.dirname(__file__), 'gcloud_key', 'credentials.json')
     TOKEN_FILE = os.path.join(os.path.dirname(__file__), 'gcloud_key', 'token.json')
-    GDRIVE_FOLDER = os.getenv('GDRIVE_PARENT_FOLDER_ID')
+    GDRIVE_FOLDER = '1mLm935x548vuwNR2UxTSK6QkGdirm28M'
     SCOPES = ['https://www.googleapis.com/auth/drive']
 
     if not os.path.exists(CREDENTIALS_FILE):
@@ -214,7 +243,6 @@ def uploadFormToDrive(docx_file):
         response = request.execute()
 
     except HttpError as error:
-        
         raise UploadFormToDriveException(f'An error occurred: {error}')
 
     file_id = response['id']
@@ -236,8 +264,11 @@ class RegistrationFormUploadView(APIView):
                 link = uploadFormToDrive(docx_file)
             except UploadFormToDriveException:
                 return Response({'message': 'file upload to drive failed'}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
-            
-            saveDocxToDatabase(docx_file, link)
+
+            try:
+                saveDocxToDatabase(docx_file, link)
+            except SaveDocxToDatabaseError as e:
+                return Response({'message': str(e)})
 
             response = {'message': 'file successfully saved'}
             return Response(response, status=status.HTTP_200_OK)

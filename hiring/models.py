@@ -16,11 +16,11 @@ class RegistrationData(models.Model):
     nama_lengkap = models.CharField(max_length=200, null=True, blank=True)
     jenis_kelamin = models.CharField(max_length=20, null=True, blank=True)
     tempat_lahir = models.CharField(max_length=50, null=True, blank=True)
-    tanggal_lahir = models.DateField(null=True, blank=True)
+    tanggal_lahir = models.DateField(db_index=True)
     kota_pribadi = models.CharField(max_length=50, null=True, blank=True)
     prov_pribadi = models.CharField(max_length=50, null=True, blank=True)
 
-    email = models.EmailField(null=True, blank=True)
+    email = models.EmailField(db_index=True)
     notelp = models.CharField(max_length=20, null=True, blank=True)
     whatsapp = models.CharField(max_length=20, null=True, blank=True)
     linkedin = models.CharField(max_length=100, null=True, blank=True)
@@ -51,8 +51,8 @@ class RegistrationData(models.Model):
     pakta_setuju = models.BooleanField(default=False)
     pakta_tidak_setuju = models.BooleanField(default=False)
 
-    tautan_dokumen = models.CharField(max_length=200, null=True, blank=True)
-    tautan_dokumen_drive_ppsn = models.CharField(max_length=200, default='', null=True, blank=True)
+    tautan_dokumen = models.URLField(max_length=200, null=True, blank=True)
+    tautan_dokumen_drive_ppsn = models.URLField(max_length=200, default='', null=True, blank=True)
 
     error_notes = models.TextField(default='', null=True, blank=True)
     created_at = models.DateTimeField(auto_now_add=True) 
