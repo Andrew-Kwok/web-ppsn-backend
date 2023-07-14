@@ -51,7 +51,7 @@ class RegistrationDataCommitteeDecisionInline(admin.TabularInline):
 @admin.register(RegistrationData)
 class RegistrationDataAdmin(admin.ModelAdmin):
     readonly_fields = ('id', 'created_at', 'updated_at')
-    list_display = ['id', 'nama_lengkap', 'tanggal_lahir', 'created_at']
+    list_display = ['id', 'nama_lengkap', 'tanggal_lahir', 'created_at', 'committee_decision_nama_panitia', 'committee_decision_berkas_lengkap', 'committee_decision_status_lulus']
     ordering = ['-created_at']
     inlines = [
         RegistrationDataOrganizationInline,
@@ -64,6 +64,20 @@ class RegistrationDataAdmin(admin.ModelAdmin):
         RegistrationDataDivisionChoiceInline,
         RegistrationDataCommitteeDecisionInline,
     ]
+
+    def committee_decision_nama_panitia(self, obj):
+        return obj.hasil_seleksi.nama_panitia if obj.hasil_seleksi else 'Unassigned'
+    committee_decision_nama_panitia.short_description = 'Nama Panitia'
+
+
+    def committee_decision_berkas_lengkap(self, obj):
+        return obj.hasil_seleksi.berkas_lengkap if obj.hasil_seleksi else ''
+    committee_decision_berkas_lengkap.short_description = 'Berkas Lengkap'
+
+    def committee_decision_status_lulus(self, obj):
+        return obj.hasil_seleksi.status_lulus if obj.hasil_seleksi else ''
+    committee_decision_status_lulus.short_description = 'Status Lulus'
+
 
 
 # class RegistrationDataOrganizationAdmin(admin.ModelAdmin):
