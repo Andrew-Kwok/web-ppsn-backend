@@ -4,6 +4,7 @@ from rest_framework import views, status, pagination
 from .models import News
 from .serializers import NewsSerializer
 
+import random
 
 # Create your views here.
 class NewsDetailAPIView(views.APIView):
@@ -42,7 +43,6 @@ class NewsPagination(pagination.PageNumberPagination):
         return super().get_page_number(request, paginator)
 
 
-
 class NewsListByPaginationAPIView(views.APIView):
     def get(self, request):
         queryset = News.objects.order_by('-created_at')
@@ -51,3 +51,24 @@ class NewsListByPaginationAPIView(views.APIView):
         result_page = paginator.paginate_queryset(queryset, request)
         serializer = NewsSerializer(result_page, many=True)
         return paginator.get_paginated_response(serializer.data)
+    
+
+class NewsOtherAPIView(views.APIView):
+    def get(self, request, news_id):
+        queryset = News.objects.exclude(pk=news_id).order_by('-created_at')
+
+        result = []
+        picked = set()
+        for i in range(4):
+            if len(queryset) == len(picked):
+                break
+
+            idx = 0
+            l, r = 0, min(len(queryset) - 1, i * len(queryset) // 3)
+            while idx in picked:
+                idx = random.randint(l, r)
+            picked.add(idx)
+            result.append(queryset[idx])
+
+        serializer = NewsSerializer(result, many=True)
+        return Response(serializer.data)
