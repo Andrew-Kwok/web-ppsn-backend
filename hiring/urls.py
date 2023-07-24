@@ -1,7 +1,13 @@
 from django.urls import path
 
-from . import views
+from .views import (
+    RegistrationFormUploadView,
+    RegistrationFormGetUUID,
+    RegistrationFormGetDecision,
+)
 
 urlpatterns = [
-    path('upload/', views.RegistrationFormUploadView.as_view(), name="form-upload"),
+    path('upload/', RegistrationFormUploadView.as_view(), name="form-upload"),
+    path("uuid/", RegistrationFormGetUUID.as_view(), name='get-uuid'),
+    path("decision/<uuid:id>", RegistrationFormGetDecision.as_view(), name='get-decision'),
 ]
