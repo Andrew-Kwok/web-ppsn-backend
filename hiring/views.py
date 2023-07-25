@@ -275,3 +275,48 @@ class RegistrationFormUploadView(APIView):
 
         response = {'message': serializer.errors}
         return Response(response, status=status.HTTP_400_BAD_REQUEST)
+
+
+class RegistrationFormGetUUID(APIView):    
+    def get(self, request, format=None):
+        email = request.query_params.get('email')
+        if email is None:
+            response = {'error': 'missing email'}
+            return Response(response, status=status.HTTP_400_BAD_REQUEST)
+
+        tanggal_lahir = request.query_params.get('tanggal_lahir')
+        if tanggal_lahir is None:
+            response = {'error': 'missing tanggal lahir'}
+            return Response(response, status=status.HTTP_400_BAD_REQUEST)
+
+        try:
+            tanggal_lahir = datetime.datetime.strptime(tanggal_lahir, "%Y-%m-%d")
+        except ValueError as e:
+            response = {'error': 'wrong tanggal_lahir format'}
+            return Response(response, status=status.HTTP_400_BAD_REQUEST)
+
+        registration_data = models.RegistrationData.objects.filter(email=email, tanggal_lahir=tanggal_lahir)
+        if len(registration_data) == 0:
+            response = {'error': f'form with email {email} and tanggal lahir {tanggal_lahir} not found'}
+            return Response(response, status=status.HTTP_404_NOT_FOUND)
+        elif len(registration_data) >= 2:
+            response = {'error': f'multiple forms found. Please contact an admin'}
+            return Response(response, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+        
+        response = {'uuid': registration_data[0].id}
+        return Response(response, status=status.HTTP_200_OK)
+
+
+class RegistrationFormGetDecision(APIView):
+    def get(self, request, id):
+        registration_data = models.RegistrationData.objects.get(pk=id)
+        if registration_data is None:
+            return Response({"error": "Registration data not found."}, status=status.HTTP_404_NOT_FOUND)
+
+        decision = registration_data.hasil_seleksi.status_lulus
+        if decision is None:
+            return Response({"status": "menunggu tinjauan"}, status=status.HTTP_200_OK)
+        
+        if decision:
+            return Response({"status": "lolos"}, status=status.HTTP_200_OK)
+        return Response({"status": "tidak lolos"}, status=status.HTTP_200_OK)
