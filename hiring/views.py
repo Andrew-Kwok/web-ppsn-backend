@@ -279,7 +279,7 @@ class RegistrationFormUploadView(APIView):
 
 
 class RegistrationFormGetUUID(APIView):    
-    def get(self, request, format=None):
+    def post(self, request, format=None):
         try:
             json_data = json.loads(request.body)
         except json.JSONDecodeError:
