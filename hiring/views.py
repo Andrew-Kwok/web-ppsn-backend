@@ -316,14 +316,19 @@ class RegistrationFormGetUUID(APIView):
 
 class RegistrationFormGetDecision(APIView):
     def get(self, request, id):
-        registration_data = models.RegistrationData.objects.get(pk=id)
+        registration_data = models.RegistrationData.objects.get(id=id)
         if registration_data is None:
             return Response({"error": "Registration data not found."}, status=status.HTTP_404_NOT_FOUND)
 
         decision = registration_data.hasil_seleksi.status_lulus
         if decision is None:
-            return Response({"status": "menunggu tinjauan"}, status=status.HTTP_200_OK)
+            return Response({"error": "Registration data not graded. Contact an admin."}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
         
-        if decision:
-            return Response({"status": "lolos"}, status=status.HTTP_200_OK)
-        return Response({"status": "tidak lolos"}, status=status.HTTP_200_OK)
+        response = {
+            "nama": registration_data.nama_lengkap,
+            "email": registration_data.email,
+            "tanggal_lahir": registration_data.tanggal_lahir.strftime("%A, %d %B %Y"),
+            "status": decision
+        }
+
+        return Response(response, status=status.HTTP_200_OK)
