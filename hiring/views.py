@@ -1,5 +1,6 @@
 import io
 import os
+import json
 import tempfile
 import datetime
 import xml.etree.ElementTree as ET
@@ -279,12 +280,18 @@ class RegistrationFormUploadView(APIView):
 
 class RegistrationFormGetUUID(APIView):    
     def get(self, request, format=None):
-        email = request.query_params.get('email')
+        try:
+            json_data = json.loads(request.body)
+        except json.JSONDecodeError:
+            response = {'error': 'Invalid JSON Data'}
+            return Response(response, status=status.HTTP_400_BAD_REQUEST)
+
+        email = json_data['email']
         if email is None:
             response = {'error': 'missing email'}
             return Response(response, status=status.HTTP_400_BAD_REQUEST)
 
-        tanggal_lahir = request.query_params.get('tanggal_lahir')
+        tanggal_lahir = json_data['tanggal_lahir']
         if tanggal_lahir is None:
             response = {'error': 'missing tanggal lahir'}
             return Response(response, status=status.HTTP_400_BAD_REQUEST)
