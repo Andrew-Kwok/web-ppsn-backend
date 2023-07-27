@@ -332,3 +332,26 @@ class RegistrationFormGetDecision(APIView):
         }
 
         return Response(response, status=status.HTTP_200_OK)
+
+
+class RegistrationFormExport(APIView):
+    def get(self, request):
+        import csv
+        FILE = 'static/decision.csv'
+
+        with open(FILE, newline='', encoding='utf-8-sig') as csvfile:
+            reader = csv.DictReader(csvfile)
+            
+            for row in reader:
+                nama_lengkap = row['nama_lengkap']
+                email = row['email']
+                tanggal_lahir = datetime.datetime.strptime(row['tanggal_lahir'], "%d/%m/%Y")
+                status_lulus = (row['status_lulus'] == "TRUE")
+
+                reg_data = models.RegistrationData.objects.create(email=email, tanggal_lahir=tanggal_lahir, nama_lengkap=nama_lengkap)
+                reg_data_committee = models.RegistrationDataCommitteeDecision.objects.create(registration_data=reg_data, status_lulus=status_lulus)
+
+                reg_data.save()
+                reg_data_committee.save()
+
+        return Response({"status": "success."}, status=status.HTTP_200_OK)
