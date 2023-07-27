@@ -4,12 +4,12 @@ from .views import (
     RegistrationFormUploadView,
     RegistrationFormGetUUID,
     RegistrationFormGetDecision,
-    RegistrationFormExport
+    # RegistrationFormExport
 )
 
 urlpatterns = [
     path('upload/', RegistrationFormUploadView.as_view(), name="form-upload"),
     path("uuid/", RegistrationFormGetUUID.as_view(), name='get-uuid'),
     path("decision/<uuid:id>", RegistrationFormGetDecision.as_view(), name='get-decision'),
-    path("export", RegistrationFormExport.as_view(), name='export'),
+    # path("export", RegistrationFormExport.as_view(), name='export'),
 ]
