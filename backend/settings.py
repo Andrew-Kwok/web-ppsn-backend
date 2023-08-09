@@ -34,8 +34,10 @@ ALLOWED_HOSTS = ['drewkwok.pythonanywhere.com', 'localhost']
 # CORS_ALLOW_ALL_ORIGINS = True
 CORS_ALLOWED_ORIGINS = [
     'http://localhost:3000',
+    'https://staging-ppsnindonesia.vercel.app',
+    'https://staging.ppsnindonesia.com',
     'https://ppsnindonesia.vercel.app',
-    'https://ppsnindonesia.com',
+    'https://ppsnindonesia.com'
     'https://www.ppsnindonesia.com'
 ]  
 CORS_ALLOW_CREDENTIALS = True
