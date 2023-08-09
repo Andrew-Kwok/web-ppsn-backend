@@ -34,9 +34,7 @@ ALLOWED_HOSTS = ['drewkwok.pythonanywhere.com', 'localhost']
 # CORS_ALLOW_ALL_ORIGINS = True
 CORS_ALLOWED_ORIGINS = [
     'http://localhost:3000',
-    'https://web-ppsn-frontend.vercel.app',
-    'https://web-ppsn-frontend-andrew-kwok.vercel.app',
-    'https://web-ppsn-frontend-git-master-andrew-kwok.vercel.app',
+    'https://ppsnindonesia.vercel.app',
     'https://ppsnindonesia.com',
     'https://www.ppsnindonesia.com'
 ]  
