@@ -11,10 +11,7 @@ https://docs.djangoproject.com/en/4.1/ref/settings/
 """
 
 from pathlib import Path
-
-import dotenv
-
-dotenv.load_dotenv()
+from datetime import timedelta
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -24,7 +21,8 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/4.1/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-jc0dm48molq*0q)v60_u6^_852mhkjkox+ko!cwqmkmxg5*v82'
+# SECRET_KEY = 'django-insecure-jc0dm48molq*0q)v60_u6^_852mhkjkox+ko!cwqmkmxg5*v82'
+SECRET_KEY = '1p8f^s3dk+90_#e+n%(*+)$i+hr#5uta9rn4yti7#sr2fi%(5-' #os.environ.get('SECRET_KEY')
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
@@ -37,7 +35,7 @@ CORS_ALLOWED_ORIGINS = [
     'https://staging-ppsnindonesia.vercel.app',
     'https://staging.ppsnindonesia.com',
     'https://ppsnindonesia.vercel.app',
-    'https://ppsnindonesia.com'
+    'https://ppsnindonesia.com',
     'https://www.ppsnindonesia.com'
 ]  
 CORS_ALLOW_CREDENTIALS = True
@@ -53,6 +51,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
 
     'rest_framework',
+    'rest_framework_simplejwt.token_blacklist',
     'corsheaders',
     'djrichtextfield',
 
@@ -60,9 +59,11 @@ INSTALLED_APPS = [
     'news',
     'question',
     'hiring',
+    'voting',
 ]
 
-MIDDLEWARE = [
+MIDDLEWARE = [\
+    'corsheaders.middleware.CorsMiddleware',
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
@@ -70,7 +71,6 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
-    'corsheaders.middleware.CorsMiddleware',
 ]
 
 ROOT_URLCONF = 'backend.urls'
@@ -123,6 +123,14 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
+REST_FRAMEWORK = {
+    'DEFAULT_AUTHENTICATION_CLASSES': (
+        'rest_framework_simplejwt.authentication.JWTAuthentication',
+    ),
+    'DEFAULT_PERMISSION_CLASSES': (
+        'rest_framework.permissions.IsAuthenticated',
+    ),
+}
 
 # Internationalization
 # https://docs.djangoproject.com/en/4.1/topics/i18n/
@@ -162,4 +170,10 @@ DJRICHTEXTFIELD_CONFIG = {
         'toolbar': 'bold italic | link image | removeformat',
         'width': 700
     }
+}
+
+SIMPLE_JWT = {
+    'REFRESH_TOKEN_LIFETIME': timedelta(days=1),
+    'ROTATE_REFRESH_TOKENS': False,
+    'BLACKLIST_AFTER_ROTATION': False
 }
