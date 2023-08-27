@@ -1,8 +1,10 @@
-from rest_framework import serializers
 from django.contrib.auth.models import User
-from rest_framework.validators import UniqueValidator
 from django.contrib.auth.password_validation import validate_password
-from voting.models import UserVotingProfile
+
+from rest_framework import serializers
+from rest_framework.validators import UniqueValidator
+
+from voting.serializers import UserVotingProfileSerializer
 
 
 class RegisterSerializer(serializers.ModelSerializer):
@@ -120,3 +122,17 @@ class UpdateUserSerializer(serializers.ModelSerializer):
         instance.save()
 
         return instance
+    
+
+class UserProfileSerializer(serializers.ModelSerializer):
+    voting_profile = UserVotingProfileSerializer(source='uservotingprofile')
+
+    class Meta:
+        model = User
+        fields = ('id', 'username', 'first_name', 'last_name', 'email', 'voting_profile')
+
+
+class UserUsernameSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = User
+        fields = ['username']

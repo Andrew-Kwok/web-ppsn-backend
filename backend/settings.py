@@ -60,9 +60,10 @@ INSTALLED_APPS = [
     'question',
     'hiring',
     'voting',
+    'member',
 ]
 
-MIDDLEWARE = [\
+MIDDLEWARE = [
     'corsheaders.middleware.CorsMiddleware',
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
