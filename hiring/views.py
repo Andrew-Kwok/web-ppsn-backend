@@ -269,7 +269,7 @@ class RegistrationFormUploadView(APIView):
             try:
                 saveDocxToDatabase(docx_file, link)
             except SaveDocxToDatabaseError as e:
-                return Response({'message': str(e)})
+                return Response({'message': str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
             response = {'message': 'file successfully saved'}
             return Response(response, status=status.HTTP_200_OK)
