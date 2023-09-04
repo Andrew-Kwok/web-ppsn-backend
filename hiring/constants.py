@@ -1,11 +1,11 @@
 REGISTRATION_FORM_EMPTY_VALUE = [None, '', 'Pilih', 'Ketik di sini', 'Ketik di sini.', 'Salin tautan di sini']
 
 REGISTRATION_FORM_DATE_FIELD = {
-    'tanggal_lahir': "%A, %d %B %Y", 
-    'masa_jabatan_mulai': "%B %y", 
-    'masa_jabatan_akhir': "%B %y", 
-    # 'masa_kerja_mulai': "%m-%y",
-    # 'masa_kerja_akhir': "%m-%y",
+    'tanggal_lahir': "%d %B %Y", 
+    'masa_jabatan_mulai': "%m-%y", 
+    'masa_jabatan_akhir': "%m-%y", 
+    'masa_kerja_mulai': "%m-%y",
+    'masa_kerja_akhir': "%m-%y",
 }
 
 REGISTRATION_FORM_BOOLEAN_FIELD = {
@@ -56,8 +56,8 @@ REGISTRATION_FORM_DATA_MAPPING = {
 REGISTRATION_FORM_ORGANIZATION_FIELD = {
     ('20', ''): 'nama_institusi',
     ('21', ''): 'posisi_jabatan',
-    ('22', 'b'): 'masa_jabatan_mulai',
-    ('22', 'a'): 'masa_jabatan_akhir',
+    ('22', 'a'): 'masa_jabatan_mulai',
+    ('22', 'b'): 'masa_jabatan_akhir',
     ('23', ''): 'deskripsi_jabatan',
 }
 REGISTRATION_FORM_ORGANIZATION_MAPPING = {
@@ -104,7 +104,6 @@ REGISTRATION_FORM_SCHOLARSHIP_MAPPING = {
         for code, field in REGISTRATION_FORM_SCHOLARSHIP_FIELD.items()
         for i in range(1, 6)
 }
-REGISTRATION_FORM_SCHOLARSHIP_MAPPING.update({'d34d5': ('lembaga_penyelenggara', 5)})
 
 REGISTRATION_FORM_PUBLICATION_FIELD = {
     '38': 'judul_publikasi',
