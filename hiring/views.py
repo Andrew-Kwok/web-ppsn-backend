@@ -97,7 +97,7 @@ def saveDocxToDatabase(docx_file, gdrive_link) -> None:
     if dob_value is None:
         raise SaveDocxToDatabaseError('date of birth: missing or unreadable')
     try:
-        dob_value = convertDate(dob_value, "%A, %d %B %Y")
+        dob_value = convertDate(dob_value, REGISTRATION_FORM_DATE_FIELD['tanggal_lahir'])
     except ValueError:
         raise SaveDocxToDatabaseError('date of birth: invalid format')
 
