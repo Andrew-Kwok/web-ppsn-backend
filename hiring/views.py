@@ -1,5 +1,6 @@
 import io
 import os
+import csv
 import json
 import tempfile
 import datetime
@@ -12,6 +13,7 @@ from rest_framework.response import Response
 from rest_framework.views import APIView
 from django.core.validators import validate_email
 from django.core.exceptions import ValidationError
+from django.core.files.uploadedfile import InMemoryUploadedFile
 
 from googleapiclient.discovery import build
 from googleapiclient.errors import HttpError
@@ -336,12 +338,54 @@ class RegistrationFormGetDecision(APIView):
 
 class RegistrationFormExport(APIView):
     def get(self, request):
-        import csv
         FILE = 'static/decision.csv'
 
         with open(FILE, newline='', encoding='utf-8-sig') as csvfile:
             reader = csv.DictReader(csvfile)
-            
+
+            for row in reader:
+                nama_lengkap = row['nama_lengkap']
+                email = row['email']
+                tanggal_lahir = datetime.datetime.strptime(row['tanggal_lahir'], "%d/%m/%Y")
+                status_lulus = (row['status_lulus'] == "TRUE")
+
+                reg_data = models.RegistrationData.objects.create(email=email, tanggal_lahir=tanggal_lahir, nama_lengkap=nama_lengkap)
+                reg_data_committee = models.RegistrationDataCommitteeDecision.objects.create(registration_data=reg_data, status_lulus=status_lulus)
+
+                reg_data.save()
+                reg_data_committee.save()
+
+        return Response({"status": "success."}, status=status.HTTP_200_OK)
+    
+
+class DecisionList(APIView):
+    def get(self, request):
+        registration_data = models.RegistrationData.objects.all()
+        response = []
+        for data in registration_data:
+            response.append({
+                "nama": data.nama_lengkap,
+                "email": data.email,
+                "tanggal_lahir": data.tanggal_lahir.strftime("%A, %d %B %Y"),
+                "status": data.hasil_seleksi.status_lulus
+            })
+
+        return Response(response, status=status.HTTP_200_OK)
+    
+    def handle_uploaded_file(self, file):
+        if isinstance(file, InMemoryUploadedFile):
+            file.seek(0)
+        return file
+
+    def post(self, request):
+        FILE = self.handle_uploaded_file(request.FILES['decision_file'])
+
+        with io.StringIO(FILE.read().decode('utf-8-sig')) as csvfile:
+            reader = csv.DictReader(csvfile)
+
+            models.RegistrationDataCommitteeDecision.objects.all().delete()
+            models.RegistrationData.objects.all().delete()
+
             for row in reader:
                 nama_lengkap = row['nama_lengkap']
                 email = row['email']
