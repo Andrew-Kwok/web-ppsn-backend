@@ -329,8 +329,9 @@ class RegistrationFormGetDecision(APIView):
         response = {
             "nama": registration_data.nama_lengkap,
             "email": registration_data.email,
-            "tanggal_lahir": registration_data.tanggal_lahir.strftime("%A, %d %B %Y"),
-            "status": decision
+            "tanggal_lahir": registration_data.tanggal_lahir.strftime("%d-%m-%Y"),
+            "status": decision,
+            "divisi": registration_data.hasil_seleksi.hasil_tinjauan,
         }
 
         return Response(response, status=status.HTTP_200_OK)
