@@ -366,8 +366,9 @@ class DecisionList(APIView):
             response.append({
                 "nama": data.nama_lengkap,
                 "email": data.email,
-                "tanggal_lahir": data.tanggal_lahir.strftime("%A, %d %B %Y"),
-                "status": data.hasil_seleksi.status_lulus
+                "tanggal_lahir": data.tanggal_lahir.strftime("%d-%m-%Y"),
+                "status": data.hasil_seleksi.status_lulus,
+                "divisi": data.hasil_seleksi.hasil_tinjauan,
             })
 
         return Response(response, status=status.HTTP_200_OK)
@@ -381,7 +382,7 @@ class DecisionList(APIView):
         FILE = self.handle_uploaded_file(request.FILES['decision_file'])
 
         with io.StringIO(FILE.read().decode('utf-8-sig')) as csvfile:
-            reader = csv.DictReader(csvfile)
+            reader = csv.DictReader(csvfile, delimiter=';')
 
             models.RegistrationDataCommitteeDecision.objects.all().delete()
             models.RegistrationData.objects.all().delete()
@@ -391,9 +392,10 @@ class DecisionList(APIView):
                 email = row['email']
                 tanggal_lahir = datetime.datetime.strptime(row['tanggal_lahir'], "%d/%m/%Y")
                 status_lulus = (row['status_lulus'] == "TRUE")
+                divisi = row['divisi']
 
                 reg_data = models.RegistrationData.objects.create(email=email, tanggal_lahir=tanggal_lahir, nama_lengkap=nama_lengkap)
-                reg_data_committee = models.RegistrationDataCommitteeDecision.objects.create(registration_data=reg_data, status_lulus=status_lulus)
+                reg_data_committee = models.RegistrationDataCommitteeDecision.objects.create(registration_data=reg_data, status_lulus=status_lulus, hasil_tinjauan=divisi)
 
                 reg_data.save()
                 reg_data_committee.save()
